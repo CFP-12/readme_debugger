@@ -1,20 +1,11 @@
-"""Result analysis and reporting module.
+# src/pydoccheck/reporting/__init__.py
 
-담당자: 조혜준 (CLI/UI 확장 예정)
-       강인후 (Markdown/JSON 리포트, 시각화 구현)
-역할: 오류 분석, 통계 계산, 리포트 생성, 시각화
-"""
+# 1. 분석 엔진 및 리포터 모듈에서 핵심 클래스만 임포트
+from .analyzer import AnalysisEngine
+from .reporter import ReportEngine
 
-from .reporter import generate_json, generate_markdown, print_summary, save_json, save_markdown
-from .visualizer import plot_error_distribution, plot_pass_rate, save_all_charts
-
+# 2. 외부(main.py 등)에서 접근할 수 있도록 노출할 항목 정의
 __all__ = [
-    "generate_markdown",
-    "save_markdown",
-    "generate_json",
-    "save_json",
-    "print_summary",
-    "plot_pass_rate",
-    "plot_error_distribution",
-    "save_all_charts",
+    "AnalysisEngine",
+    "ReportEngine",
 ]
