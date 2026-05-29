@@ -7,5 +7,6 @@
 from .result import ErrorType, ExecutionResult
 from .runner import CodeRunner
 from .sandbox import Sandbox
+from .statistics import ExecutionStats, compute_stats
 
-__all__ = ["CodeRunner", "ExecutionResult", "ErrorType", "Sandbox"]
+__all__ = ["CodeRunner", "ExecutionResult", "ErrorType", "Sandbox", "ExecutionStats", "compute_stats"]
