@@ -36,3 +36,8 @@ python_version = "3.10"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+markers = [
+    "slow: venv 생성이 포함된 느린 통합 테스트 (deselect with '-m not slow')",
+]
