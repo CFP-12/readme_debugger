@@ -17,7 +17,7 @@ from .utils.helpers import find_documents, parse_document
 from .execution.runner import CodeRunner
 
 # 방금 다듬은 __init__.py를 활용한 깔끔한 패키지 임포트!
-from src.pydoccheck.reporting import AnalysisEngine, ReportEngine
+from .reporting import AnalysisEngine, ReportEngine
 
 app = typer.Typer(help="PyDocCheck: 마크다운 및 RST 문서 내부 파이썬 소스코드 격리 환경 검증 도구")
 console = Console()  # main.py 전용 독립 콘솔 객체 생성
