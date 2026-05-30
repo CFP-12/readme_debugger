@@ -10,6 +10,7 @@ black==23.12.0
 flake8==6.1.0
 mypy==1.7.0
 
-# CLI and visualization (for later stages)
+# CLI and visualization
 click==8.1.7
 rich==13.7.0
+matplotlib==3.8.2
