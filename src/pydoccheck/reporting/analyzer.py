@@ -5,8 +5,8 @@
 """
 
 from typing import Dict, List, Any
-from src.pydoccheck.execution.result import ExecutionResult, ErrorType
-from src.pydoccheck.execution.statistics import ExecutionStats, compute_stats
+from ..execution.result import ExecutionResult, ErrorType
+from ..execution.statistics import ExecutionStats, compute_stats
 from ..models.code_block import CodeBlock
 
 

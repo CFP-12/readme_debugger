@@ -13,8 +13,8 @@ from rich.console import Console
 from rich.progress import Progress, SpinnerColumn, TextColumn, BarColumn, TaskProgressColumn
 
 # 팀원 전원 모듈 유기적 결합 및 임포트 선언
-from src.pydoccheck.utils.helpers import find_documents, parse_document
-from src.pydoccheck.execution.runner import CodeRunner
+from .utils.helpers import find_documents, parse_document
+from .execution.runner import CodeRunner
 
 # 방금 다듬은 __init__.py를 활용한 깔끔한 패키지 임포트!
 from src.pydoccheck.reporting import AnalysisEngine, ReportEngine
