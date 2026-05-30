@@ -8,117 +8,84 @@ PyDocCheck는 마크다운(`.md`)과 reStructuredText(`.rst`) 문서에 포함�
 
 현재는 문서 파싱과 코드 블록 검출, 메타데이터 구축에 집중하고 있으며, 향후 샌드박스 실행 및 보고서 생성 기능을 강화할 예정입니다.
 
-## 현재 기능
+## 현재 상태 (요약)
 
-- Markdown 및 RST 문서에서 코드 블록 추출
-- 코드 블록 메타데이터 수집
-- 코드 블록 실행 가능 여부 판별
-- 테스트용 샘플 문서 제공
+- 문서 파싱(Markdown / RST) 및 코드 블록 메타데이터 수집
+- 샌드박스(격리) 실행 엔진과 연동하여 코드 블록 실행 및 결과 집계
+- 터미널 출력(리치 UI) 및 Markdown/HTML 리포트 생성 기능
+- 테스트 커버리지: 프로젝트에 포함된 단위 테스트가 통과함
 
 ## 프로젝트 디렉토리 구조
 
 ```
-PyDocCheck/
-├── pyproject.toml
-├── requirements.txt
-├── README.md
-├── src/
-│   └── pydoccheck/
-│       ├── __init__.py
-│       ├── main.py
-│       ├── execution/
-│       ├── models/
-│       ├── parsers/
-│       ├── reporting/
-│       └── utils/
-└── tests/
-    ├── fixtures/
-    │   └── sample_docs/
-    └── test_*.py
+src/pydoccheck/
+├── main.py             # CLI 진입점 (Typer)
+├── execution/          # 실행 엔진, 결과 모델
+├── parsers/            # Markdown / RST 파서
+├── reporting/          # 리포트 생성기 및 시각화
+└── utils/              # 유틸리티 헬퍼
 ```
 
-## 설치 방법
+## 빠른 시작 (개발자용)
 
-```bash
-cd 설치하고 싶은 디렉토리 주소
+1. 가상환경 생성 및 활성화 (Windows 예시):
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -U pip
 python -m pip install -r requirements.txt
 ```
 
-개발 환경에서는 다음과 같이 편리하게 설치할 수 있습니다:
+2. 테스트 실행:
 
-```bash
-python -m pip install -e .
+```powershell
+python -m pytest -q
 ```
 
-## 테스트 실행
+3. 샘플 문서로 CLI 실행 (개발환경에서 권장):
 
-```bash
-pytest tests/ -v --tb=short
+- Windows (명령 프롬프트):
+
+```cmd
+set PYTHONPATH=src&& .venv\Scripts\python.exe -m pydoccheck.main tests\fixtures\sample_docs -f all -t 30 --system-python
 ```
 
-특정 테스트만 실행하려면:
+- POSIX (bash):
 
 ```bash
-pytest tests/test_markdown_parser.py -v
+PYTHONPATH=src python -m pydoccheck.main tests/fixtures/sample_docs -f all -t 30 --system-python
 ```
 
-## 사용 방법
+실행 시 `pydoccheck_report/` 디렉터리가 생성되고 `report.md` 및 `report.html` 같은 결과물이 만들어집니다.
 
-### 파이썬 코드에서 사용
+## 리포트 파일 정리
 
-```python
-from pydoccheck.parsers import MarkdownParser
-from pydoccheck.utils.helpers import load_document
+개발 중 생성된 임시 리포트 파일은 안전하게 삭제할 수 있습니다. 작업 환경에서 다음을 실행하세요:
 
-content, doc_info = load_document("tests/fixtures/sample_docs/sample_simple.md")
-parser = MarkdownParser()
-blocks = parser.parse(content, doc_info)
-
-for block in blocks:
-    print(f"블록 ID: {block.block_id}")
-    print(f"언어: {block.language}")
-    print(f"시작 줄: {block.start_line}, 종료 줄: {block.end_line}")
-    print(f"임포트: {block.imports}")
-    print(f"실행 가능: {block.is_executable}")
+```powershell
+rmdir /S /Q pydoccheck_report
 ```
 
-### CLI 실행
+또는 필요한 파일만 삭제하려면:
 
-현재 CLI 진입점은 `src/pydoccheck/main.py`입니다. 루트 폴더에서 다음 명령을 실행하세요:
-
-```bash
-python src/pydoccheck/main.py check path/to/docs --format all --timeout 30
+```powershell
+del pydoccheck_report\report.md
+del pydoccheck_report\report.html
 ```
 
 ## 테스트용 샘플 문서
 
-샘플 문서 파일들은 `tests/fixtures/sample_docs/`에 있습니다:
+샘플 문서는 `tests/fixtures/sample_docs/`에 포함되어 있습니다:
 
-- `sample_simple.md`
-- `sample_complex.md`
-- `sample_rst.rst`
+- sample_simple.md
+- sample_complex.md
+- sample_rst.rst
 
-## 개발 일정
+## 기여 및 개발
 
-- **1주차**: 문서 구조 정의 및 파서 인터페이스 설계
-- **2주차**: Markdown/RST 코드 추출 엔진 구현
-- **3주차**: 메타데이터 매핑 로직 추가
-- **4주차**: 코드 전처리 기능 구현
-- **5주차**: 코드 스니펫 최적화
-- **6주차**: 구문 유효성 검증 기능 개발
-- **7주차**: 샌드박스 실행 환경 연동
-- **8주차**: 보고서 생성 및 결과 출력 기능 개발
+- 로컬에서 수정 후 테스트를 통과시키고 Pull Request를 보내주세요.
+- 코드 스타일과 유닛 테스트 추가를 권장합니다.
 
-## 팀원 및 역할
-
-- **정민경**: 문서 분석 및 데이터 수집
-- **백지유**: 문서 파싱 및 코드 전처리
-- **강인후**: 코드 실행 환경 및 테스트 엔진
-- **조혜준**: 결과 분석 및 보고서 출력
-
-## 향후 계획
-
-1. 파서 기능 무결성 검증 및 테스트 커버리지 확장
-2. 다양한 예외 케이스 처리 강화
-3. 코드 전처리 및 정규화 로직 보완
-4. 격리 실행 엔진과 통합된 검증 파이프라인 완성
+---
+수정이 필요하면 어떤 부분을 더 명확히 설명할지 알려주세요.

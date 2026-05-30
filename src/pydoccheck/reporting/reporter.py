@@ -141,60 +141,6 @@ class ReportEngine:
         rendered_md = template.render(stats=self.stats, results=self.results)
         output_path.write_text(rendered_md, encoding='utf-8')
 
-
-# ------------------------------------------------------------------ #
-# Module-level helper functions (tests expect these names)
-# ------------------------------------------------------------------ #
-
-def generate_markdown(stats: ExecutionStats, results: List[ExecutionResult], title: str = "PyDocCheck") -> str:
-    """간단한 마크다운 리포트 문자열 생성 (테스트용 포맷 친화적)."""
-    lines = [f"# {title}", "", "## 요약", ""]
-    lines.append(f"| 전체 블록 수 | {stats.total} |")
-    lines.append(f"| 성공 | {stats.passed} |")
-    lines.append(f"| 실패 | {stats.failed} |")
-    lines.append("")
-    lines.append("## 오류 유형 분포")
-    for k, v in getattr(stats, 'error_counts', {}).items():
-        lines.append(f"- {k}: {v}")
-    lines.append("")
-    lines.append("## 실패 블록 상세")
-    for r in results:
-        lines.append(f"- {r.block_id}: {'OK' if r.success else 'FAILED'}")
-        if not r.success:
-            lines.append(f"  - stderr: {r.stderr}")
-            if r.error_message:
-                lines.append(f"  - message: {r.error_message}")
-    return "\n".join(lines)
-
-
-def generate_json(stats: ExecutionStats, results: List[ExecutionResult]) -> str:
-    payload = {
-        "generated_at": datetime.utcnow().isoformat() + "Z",
-        "statistics": stats.to_dict(),
-        "results": [r.to_dict() for r in results],
-    }
-    return json.dumps(payload, ensure_ascii=False)
-
-
-def save_markdown(stats: ExecutionStats, results: List[ExecutionResult], path: str) -> None:
-    md = generate_markdown(stats, results)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(md)
-
-
-def save_json(stats: ExecutionStats, results: List[ExecutionResult], path: str) -> None:
-    raw = generate_json(stats, results)
-    with open(path, "w", encoding="utf-8") as f:
-        f.write(raw)
-
-
-def print_summary(stats: ExecutionStats, results: List[ExecutionResult]) -> None:
-    # 간단한 요약을 표준 출력에 찍음 (테스트는 특정 키워드 존재 여부만 확인)
-    print(f"성공: {stats.passed}  실패: {stats.failed}  전체: {stats.total}")
-    if getattr(stats, 'error_counts', {}):
-        print("오류 유형 분포:")
-        for k, v in stats.error_counts.items():
-            print(f"- {k}: {v}")
     def generate_html_report(self, output_path: Path) -> None:
         """차트 레이아웃 및 파일별 지표 테이블을 종합한 독립 대시보드형 HTML 리포트를 생성합니다.
 
@@ -294,4 +240,60 @@ def print_summary(stats: ExecutionStats, results: List[ExecutionResult]) -> None
         template = Template(html_template_str)
         rendered = template.render(stats=self.stats, results=self.results, file_stats=self.file_stats, chart_div=chart_div, image_paths=image_paths)
         output_path.write_text(rendered, encoding='utf-8')
+
+
+# ------------------------------------------------------------------ #
+# Module-level helper functions (tests expect these names)
+# ------------------------------------------------------------------ #
+
+def generate_markdown(stats: ExecutionStats, results: List[ExecutionResult], title: str = "PyDocCheck") -> str:
+    """간단한 마크다운 리포트 문자열 생성 (테스트용 포맷 친화적)."""
+    lines = [f"# {title}", "", "## 요약", ""]
+    lines.append(f"| 전체 블록 수 | {stats.total} |")
+    lines.append(f"| 성공 | {stats.passed} |")
+    lines.append(f"| 실패 | {stats.failed} |")
+    lines.append("")
+    lines.append("## 오류 유형 분포")
+    for k, v in getattr(stats, 'error_counts', {}).items():
+        lines.append(f"- {k}: {v}")
+    lines.append("")
+    lines.append("## 실패 블록 상세")
+    for r in results:
+        lines.append(f"- {r.block_id}: {'OK' if r.success else 'FAILED'}")
+        if not r.success:
+            lines.append(f"  - stderr: {r.stderr}")
+            if r.error_message:
+                lines.append(f"  - message: {r.error_message}")
+    return "\n".join(lines)
+
+
+def generate_json(stats: ExecutionStats, results: List[ExecutionResult]) -> str:
+    payload = {
+        "generated_at": datetime.utcnow().isoformat() + "Z",
+        "statistics": stats.to_dict(),
+        "results": [r.to_dict() for r in results],
+    }
+    return json.dumps(payload, ensure_ascii=False)
+
+
+def save_markdown(stats: ExecutionStats, results: List[ExecutionResult], path: str) -> None:
+    md = generate_markdown(stats, results)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(md)
+
+
+def save_json(stats: ExecutionStats, results: List[ExecutionResult], path: str) -> None:
+    raw = generate_json(stats, results)
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(raw)
+
+
+def print_summary(stats: ExecutionStats, results: List[ExecutionResult]) -> None:
+    # 간단한 요약을 표준 출력에 찍음 (테스트는 특정 키워드 존재 여부만 확인)
+    print(f"성공: {stats.passed}  실패: {stats.failed}  전체: {stats.total}")
+    if getattr(stats, 'error_counts', {}):
+        print("오류 유형 분포:")
+        for k, v in stats.error_counts.items():
+            print(f"- {k}: {v}")
+    
 
