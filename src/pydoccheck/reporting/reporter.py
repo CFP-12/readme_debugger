@@ -1,4 +1,4 @@
-"""Rich UI 기반 터미널 시각화 및 Jinja2/Plotly/JSON 리포트 자동 생성기.
+""" Rich UI 기반 터미널 시각화 및 Jinja2/Plotly/JSON 리포트 자동 생성기.
 
 담당자: 조혜준
 """
@@ -28,7 +28,7 @@ console = Console()
 
 
 class ReportEngine:
-    """CLI 대시보드 화면 렌더링 및 고도화된 외부 리포트 파일(Markdown, HTML, JSON) 저장을 전담합니다."""
+    """CLI 대시보드 화면 렌더링 및 외부 리포트 파일 저장."""
 
     def __init__(self, results: List[ExecutionResult], stats: ExecutionStats, file_stats: Dict[str, Any], block_map: Dict[str, CodeBlock]):
         self.results = results
@@ -115,7 +115,7 @@ _Generated beautifully by PyDocCheck Advanced Reporter Engine Tool._
 """
 
     def print_cli_summary(self) -> None:
-        """종합 통계 요약 데이터를 터미널에 구조화된 표(Table) 형태로 출력합니다."""
+        """종합 통계 요약 데이터 표(Table) 형태로 출력."""
         console.print("\n[bold chartreuse3]📊 검증 완료! 프로젝트 종합 통계 (Summary)[/bold chartreuse3]")
         
         table = Table(show_header=True, header_style="bold magenta", expand=False)
@@ -131,7 +131,7 @@ _Generated beautifully by PyDocCheck Advanced Reporter Engine Tool._
         console.print(table)
 
     def print_cli_errors(self) -> None:
-        """실패한 코드 블록의 원본 소스 위치, 에러 라인, 세부 로그를 패널 스타일로 덤프합니다."""
+        """실패한 코드 블록의 원본 소스 위치, 에러 라인, 세부 로그를 패널 스타일로 덤프."""
         failed_results = [r for r in self.results if not r.success]
         if not failed_results:
             console.print("\n[bold green]✨ 모든 문서 내 코드 스니펫이 예외 없이 깨끗하게 통과했습니다![/bold green]")
@@ -168,7 +168,7 @@ _Generated beautifully by PyDocCheck Advanced Reporter Engine Tool._
             console.print("[bold dim white]" + "─" * 60 + "[/bold dim white]\n")
 
     def _generate_plotly_chart(self) -> str:
-        """Plotly 라이브러리를 활용해 원형 분포 차트 HTML 코드를 빌드합니다."""
+        """Plotly 라이브러리를 활용해 원형 분포 차트 HTML 코드를 빌드."""
         try:
             import plotly.graph_objects as go
             labels = ['Passed', 'Failed']
@@ -197,7 +197,7 @@ _Generated beautifully by PyDocCheck Advanced Reporter Engine Tool._
         output_path.write_text(rendered_md, encoding='utf-8')
 
     def generate_html_report(self, output_path: Path) -> None:
-        """실시간 실행 시간을 구하여 대시보드형 HTML 리포트를 생성합니다."""
+        """실시간 실행 시간을 구하여 대시보드형 HTML 리포트를 생성."""
         output_dir = output_path.parent
         output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -346,7 +346,7 @@ _Generated beautifully by PyDocCheck Advanced Reporter Engine Tool._
         output_path.write_text(rendered, encoding='utf-8')
 
     def generate_json_report(self, output_path: Path) -> None:
-        """분석 데이터, 차트 정보, 실패 블록 메타데이터를 통합 구조화하여 깨끗한 JSON 파일로 드롭합니다."""
+        """분석 데이터, 차트 정보, 실패 블록 메타데이터를 통합 구조화, 깨끗한 JSON 파일로 드롭."""
         report_payload = {
             "meta": {
                 "tool_name": "PyDocCheck Validator Engine",

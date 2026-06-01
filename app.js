@@ -7,9 +7,8 @@ async function initEngine() {
         pyodide = await loadPyodide();
         await pyodide.loadPackage("micropip"); 
         
-        statusDiv.innerText = "⚡ 엔진 구동 완료! 3조 실제 패키지 구조 가상 조립 중...";
+        statusDiv.innerText = "⚡ 엔진 구동 완료! 실제 패키지 구조 가상 조립 중...";
 
-        // 💡 [핵심 교정부 1] 3조 프로젝트에 존재하지 않는 base_parser 의존성을 완전 제거하고 내장 init 코드를 재설정합니다.
         await pyodide.runPythonAsync(
 `import os
 os.makedirs('/home/pyodide/src', exist_ok=True)
@@ -25,7 +24,6 @@ with open('/home/pyodide/src/pydoccheck/models/__init__.py', 'w') as f: pass
 with open('/home/pyodide/src/pydoccheck/utils/__init__.py', 'w') as f: pass
 with open('/home/pyodide/src/pydoccheck/reporting/__init__.py', 'w') as f: pass
 
-# 🔥 base_parser를 지우고 실제 존재하는 두 개의 핵심 파서만 명확히 노출하도록 교정했습니다.
 parsers_init_code = """from .markdown_parser import MarkdownParser
 from .rst_parser import RSTParser"""
 
@@ -33,7 +31,6 @@ with open('/home/pyodide/src/pydoccheck/parsers/__init__.py', 'w') as f:
     f.write(parsers_init_code.strip())`
         );
 
-        // 💡 [핵심 교정부 2] 주입 모듈 리스트에서도 base_parser.py를 제거하여 404 경고 혼선을 방지합니다.
         const modules = [
             { url: 'src/pydoccheck/models/code_block.py', path: '/home/pyodide/src/pydoccheck/models/code_block.py' },
             { url: 'src/pydoccheck/utils/helpers.py', path: '/home/pyodide/src/pydoccheck/utils/helpers.py' },
@@ -65,9 +62,7 @@ with open('/home/pyodide/src/pydoccheck/parsers/__init__.py', 'w') as f:
     }
 }
 
-// -------------------------------------------------------------
-// 기능 1: GitHub 주소 분석 및 브랜치 자동 인식 구조
-// -------------------------------------------------------------
+// GitHub 주소 분석 및 브랜치 자동 인식 구조
 document.getElementById('gitBtn').addEventListener('click', async () => {
     let repoUrl = document.getElementById('repoUrl').value.trim();
     const output = document.getElementById('output');
@@ -138,9 +133,7 @@ async function processTreeAndRun(treeList, owner, repo, branch) {
     runValidation(readmeContent, `${owner}/${repo} (${branch})`);
 }
 
-// -------------------------------------------------------------
 // 기능 2: 로컬 ZIP 파일 업로드 및 브라우저 내 해제 구조
-// -------------------------------------------------------------
 document.getElementById('zipBtn').addEventListener('click', async () => {
     const fileInput = document.getElementById('zipFile');
     const output = document.getElementById('output');
@@ -174,9 +167,7 @@ document.getElementById('zipBtn').addEventListener('click', async () => {
     }
 });
 
-// -------------------------------------------------------------
-// 📊 핵심 공통 샌드박스 검증 및 추천 가이드 출력 엔진
-// -------------------------------------------------------------
+// 핵심 공통 샌드박스 검증 및 추천 가이드 출력 엔진
 async function runValidation(mdContent, sourceName) {
     const output = document.getElementById('output');
     
@@ -217,20 +208,20 @@ async function runValidation(mdContent, sourceName) {
 
         const data = JSON.parse(jsonResult);
         
-        // 💡 [수정 포인트 1] 파이썬 예시 코드 블록이 0개일 때의 예외 처리 레이아웃 가동
+        //  파이썬 예시 코드 블록이 0개일 때의 예외 처리 레이아웃 가동
         if (data.total === 0) {
             output.innerHTML = `
                 <h2>📊 타깃 문서 분석: ${sourceName}</h2>
                 <div style="background:#fff7ed; border:1px solid #ffedd5; color:#c2410c; padding:20px; border-radius:8px; border-left:5px solid #f97316;">
                     ⚠️ <b>분석 결과 알림:</b> 해당 문서(${sourceName}) 내부에서 
-                    <code style="background:#ffedd5; padding:2px 4px;">\`\`\`python</code>으로 선언된 <b>실행 가능한 파이썬 코드 블록을 찾지 못했습니다.</b><br>
+                    <code style="background:#ffedd5; padding:2px 4px;">python</code>으로 선언된 <b>실행 가능한 파이썬 코드 블록을 찾지 못했습니다.</b><br>
                     <span style="font-size:13px; color:#ea580c;">* 파이썬 프로젝트가 맞더라도 가이드 문서에 검증할 예시 코드가 없거나, 주석 처리된 일반 텍스트 블록일 수 있습니다.</span>
                 </div>
             `;
-            return; // 💡 로직을 여기서 조기 종료하여 허위 성공 멘트가 뜨지 않게 차단합니다.
+            return;
         }
 
-        // 코드 블록이 1개 이상 있을 때만 기존 대시보드를 정상 출력합니다.
+        // 코드 블록이 1개 이상 있을 때만 기존 대시보드를 정상 출력합.
         let htmlReport = `<h2>📊 [결과 요약] 타깃 문서: ${sourceName}</h2>`;
         htmlReport += `
             <table width="100%" style="border-collapse:collapse; margin-bottom:20px; font-size:15px;">
@@ -239,7 +230,7 @@ async function runValidation(mdContent, sourceName) {
             </table>
         `;
 
-        // 💡 [수정 포인트 2] 코드 블록이 존재하면서 실패가 0개일 때만 완벽 통과(🎉) 처리
+        // 코드 블록이 존재하면서 실패가 0개일 때만 완벽 통과 처리
         if(data.failed > 0) {
             htmlReport += `<h3>❌ 실패한 코드 블록 및 AI 정밀 추천 가이드</h3>`;
             data.details.forEach((res, index) => {

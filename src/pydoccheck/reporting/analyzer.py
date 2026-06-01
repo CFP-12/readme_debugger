@@ -1,7 +1,6 @@
-"""프로젝트 및 개별 파일별 에러 데이터 분석 엔진.
+""" ExecutionResult와 CodeBlock 데이터를 기반으로 파일별 통계를 분석.
 
 담당자: 조혜준
-- 인후 님의 통계 엔진을 기반으로 하며, 파서 모듈의 CodeBlock 메타데이터를 결합해 파일별 통계를 정제합니다.
 """
 
 from typing import Dict, List, Any
@@ -11,7 +10,7 @@ from ..models.code_block import CodeBlock
 
 
 class AnalysisEngine:
-    """ExecutionResult 목록과 원본 CodeBlock 데이터를 교차 분석합니다."""
+    """ExecutionResult 목록과 원본 CodeBlock 데이터를 교차 분석."""
 
     def __init__(self, results: List[ExecutionResult], block_map: Dict[str, CodeBlock]):
         self.results = results
