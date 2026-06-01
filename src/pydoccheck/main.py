@@ -193,6 +193,11 @@ def check(
         reporter.generate_html_report(html_path)
         console.print(f"[bold green]✔ HTML 리포트 → {html_path}[/bold green]")
 
+    if report_format in ["json", "all"]:
+        json_path = output_dir / "report.json"
+        reporter.generate_json_report(json_path)
+        console.print(f"[bold green]✔ JSON 리포트 → {json_path}[/bold green]")
+
 
 if __name__ == "__main__":
     app()
