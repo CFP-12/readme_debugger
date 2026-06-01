@@ -176,7 +176,7 @@ _Generated beautifully by PyDocCheck Advanced Reporter Engine Tool._
             
             fig = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.3, marker=dict(colors=['#2ecc71', '#e74c3c']))])
             fig.update_layout(title_text="Execution Success vs Failure Rate", width=450, height=320, margin=dict(t=40, b=10, l=10, r=10))
-            return fig.to_html(full_html=False, include_plotlyjs='cdn')
+            return fig.to_html(full_html=False, include_plotlyjs=True)
         except ImportError:
             return "<div style='color:#e74c3c; font-weight:bold; padding:20px; border:1px dashed #e74c3c; border-radius:5px;'>⚠️ Plotly 라이브러리가 로컬 환경에 없어 시각화 그래픽 데이터가 제외되었습니다.</div>"
 
@@ -187,11 +187,12 @@ _Generated beautifully by PyDocCheck Advanced Reporter Engine Tool._
 
         template = Template(self.markdown_template_str)
         rendered_md = template.render(
-            stats=self.stats, 
-            results=self.results, 
-            file_stats=self.file_stats, 
+            stats=self.stats,
+            results=self.results,
+            file_stats=self.file_stats,
             block_map=self.block_map,
-            generated_at=current_time_str  # 🚀 템플릿 내부 변수에 동적 바인딩
+            generated_at=current_time_str,
+            hasattr=hasattr,  # Jinja2는 hasattr을 모르므로 명시적으로 전달
         )
         output_path.write_text(rendered_md, encoding='utf-8')
 
@@ -333,13 +334,14 @@ _Generated beautifully by PyDocCheck Advanced Reporter Engine Tool._
 
         template = Template(html_template_str)
         rendered = template.render(
-            stats=self.stats, 
-            results=self.results, 
-            file_stats=self.file_stats, 
-            chart_div=chart_div, 
-            image_paths=image_paths, 
+            stats=self.stats,
+            results=self.results,
+            file_stats=self.file_stats,
+            chart_div=chart_div,
+            image_paths=image_paths,
             block_map=self.block_map,
-            generated_at=current_time_str  # 🚀 HTML 상단 헤더에도 동적 주입
+            generated_at=current_time_str,
+            hasattr=hasattr,  # Jinja2는 hasattr을 모르므로 명시적으로 전달
         )
         output_path.write_text(rendered, encoding='utf-8')
 
