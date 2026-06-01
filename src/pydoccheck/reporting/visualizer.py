@@ -14,13 +14,33 @@ if TYPE_CHECKING:
 
 
 def _check_matplotlib() -> None:
-    """matplotlib 설치 여부를 확인한다."""
+    """matplotlib 설치 여부를 확인하고, 한글 폰트를 자동 설정한다."""
     try:
         import matplotlib  # noqa: F401
     except ImportError as e:
         raise ImportError(
             "시각화 기능을 사용하려면 matplotlib을 설치하세요: pip install matplotlib"
         ) from e
+
+    import platform
+    import matplotlib.pyplot as plt
+
+    system = platform.system()
+    if system == "Windows":
+        plt.rcParams["font.family"] = "Malgun Gothic"   # 맑은 고딕 (Windows 기본 내장)
+    elif system == "Darwin":
+        plt.rcParams["font.family"] = "AppleGothic"     # macOS 기본 한글 폰트
+    else:
+        # Linux: 나눔고딕이 설치돼 있으면 사용, 없으면 기본값 유지
+        try:
+            from matplotlib import font_manager
+            fonts = [f.name for f in font_manager.fontManager.ttflist]
+            if "NanumGothic" in fonts:
+                plt.rcParams["font.family"] = "NanumGothic"
+        except Exception:
+            pass
+
+    plt.rcParams["axes.unicode_minus"] = False  # 마이너스 기호 깨짐 방지
 
 
 def plot_pass_rate(
