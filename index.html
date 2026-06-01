@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>PyDocCheck Web Dashboard V2</title>
+    
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #1e293b; margin: 40px; line-height: 1.6; }
+        .container { max-width: 900px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        h1 { color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0; }
+        .card { background: #f1f5f9; padding: 20px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1; }
+        .card h3 { margin-top: 0; color: #0f172a; }
+        input[type="text"] { width: 70%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 14px; }
+        input[type="file"] { padding: 8px; font-size: 14px; }
+        button { background-color: #2563eb; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 14px; transition: background 0.2s; }
+        button:hover { background-color: #1d4ed8; }
+        button:disabled { background-color: #93c5fd; cursor: not-allowed; }
+        #status { font-weight: bold; color: #475569; margin-bottom: 15px; padding: 10px; background: #e2e8f0; border-radius: 6px; }
+        #output { background-color: #0f172a; color: #f8fafc; padding: 20px; border-radius: 8px; min-height: 150px; white-space: pre-wrap; margin-top: 20px; font-family: 'Consolas', monospace; font-size: 14px; }
+        .error-box { background-color: #fef2f2; border-left: 4px solid #ef4444; padding: 12px; margin-top: 10px; color: #991b1b; border-radius: 4px; }
+        .success-badge { display: inline-block; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+        .fail-badge { display: inline-block; background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🔍 PyDocCheck 분석 플랫폼 (Wasm Sandbox)</h1>
+    <p>서버 자원을 전혀 쓰지 않고, 오직 브라우저 내부 가상환경에서 파이썬 기술 문서를 정밀 검증합니다.</p>
+    
+    <div id="status">⏳ 가상 파이썬 인터프리터(Pyodide) 엔진 로딩 중...</div>
+    
+    <div class="card">
+        <h3>🌐 1. GitHub 원격 레포지토리 주소 입력</h3>
+        <p>GitHub 주소를 붙여넣으면 파이썬 기반 프로젝트인지 자동 분석 후 README.md를 검증합니다.</p>
+        <input type="text" id="repoUrl" placeholder="https://github.com/CFP-12/PyDocCheck">
+        <button id="gitBtn" disabled>레포지토리 분석</button>
+    </div>
+
+    <div class="card">
+        <h3>📦 2. 로컬 프로젝트 ZIP 파일 업로드</h3>
+        <p>내 컴퓨터의 프로젝트 폴더를 .zip으로 압축해서 올려주시면 브라우저가 직접 압축을 풀어 분석합니다.</p>
+        <input type="file" id="zipFile" accept=".zip">
+        <button id="zipBtn" disabled>ZIP 프로젝트 검증</button>
+    </div>
+
+    <h3>📊 통합 검증 리포트 대시보드</h3>
+    <div id="output">엔진 초기화가 완료되면 검증을 시작할 수 있습니다.</div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
